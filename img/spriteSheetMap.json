@@ -1,0 +1,14 @@
+{"sheets":[
+		{"imgURL":"img/SpriteSheet.png", "sheetName":"Todo",
+			"sprites":[
+				{"name":"Guardia","x":1,"y":1,"w":62,"h":62 },
+				{"name":"Monstruo","x":65,"y":1,"w":62,"h":62 },
+				{"name":"Pilar","x":129,"y":1,"w":62,"h":62 },
+				{"name":"Cristal","x":193,"y":1,"w":62,"h":62 },
+				{"name":"Escudo","x":257,"y":1,"w":62,"h":62 },
+				{"name":"Piso","x":320,"y":0,"w":64,"h":64 },
+				{"name":"Vision","x":384,"y":0,"w":192,"h":64 }
+			]
+		}
+	]
+}

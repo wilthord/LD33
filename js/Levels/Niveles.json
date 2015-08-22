@@ -1,0 +1,18 @@
+{"Niveles":[
+		{"id":1, "nombre":"Inicio",
+			"entidades":[
+				{"type":"GuardianClass","xIni":100,"yIni":100,"xDest":200,"yDest":100, "velocidad":100 },
+				{"type":"GuardianClass","xIni":200,"yIni":200,"xDest":100,"yDest":200 },
+				{"type":"PlayerClass","xIni":300,"yIni":300 }
+			]
+		},
+		{"id":2, "nombre":"Hide",
+			"entidades":[
+				{"type":"GuardianClass","xIni":400,"yIni":400,"xDest":300,"yDest":200 },
+				{"type":"GuardianClass","xIni":100,"yIni":100,"xDest":300,"yDest":300 },
+				{"type":"GuardianClass","xIni":200,"yIni":200,"xDest":200,"yDest":300 },
+				{"type":"PlayerClass","xIni":200,"yIni":200 }
+			]
+		}
+	]
+}
