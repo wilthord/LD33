@@ -4,6 +4,8 @@ MOV_IZQUIERDA = 'move-left';
 MOV_ABAJO = 'move-down';
 MOV_DERECHA = 'move-right';
 
+OCULTAR = 'OCULTAR';
+
 ACT_DISPARA = 'dispara';
 
 CLICK = 'Click';
@@ -33,7 +35,9 @@ InputEngineClass.prototype.setup = function () {
 	gInputEngine.bind(65, MOV_IZQUIERDA);
 	gInputEngine.bind(83, MOV_ABAJO);
 	gInputEngine.bind(68, MOV_DERECHA);
-	gInputEngine.bind(CLICK, ACT_DISPARA);
+	//Tecla E para ocultarse
+	gInputEngine.bind(69, OCULTAR);
+	gInputEngine.bind(CLICK, CLICK);
 
 	// Se agregan los listeners para los eventos de ingreso
 	document.getElementById(GE.nombreCanvas).addEventListener('mousemove', gInputEngine.onMouseMove);
@@ -53,6 +57,7 @@ InputEngineClass.prototype.onMouseMove = function (event) {
 //-----------------------------
 InputEngineClass.prototype.onKeyDown = function (event) {
 	// Se obtiene la accion relacionada a la tecla presionada
+	//alert(event.keyCode);
 	var action = gInputEngine.bindings[event.keyCode];
 
 	//Si la tecla presionada se encuentra mapeada
@@ -60,6 +65,7 @@ InputEngineClass.prototype.onKeyDown = function (event) {
 		// Se marca la acción como true, mientras esté en true se ejecutará la acción
 		gInputEngine.actions[action] = true;
 	}
+	
 }
 
 //-----------------------------

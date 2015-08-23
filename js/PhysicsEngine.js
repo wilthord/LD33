@@ -46,10 +46,14 @@ PhysicsEngineClass.prototype.update = function () {
 PhysicsEngineClass.prototype.addContactListener = function (callbacks) {
     var listener = new b2ContactListener();
 
-    if(callbacks.PostSolve) listener.PostSolve = function (contact, impulse) {
-        callbacks.PostSolve(contact.GetFixtureA().GetBody(),
-                            contact.GetFixtureB().GetBody(),
-                            impulse.normalImpulses[0]);
+    if(callbacks.BeginContact) listener.BeginContact = function (contact) {
+        callbacks.BeginContact(contact.GetFixtureA().GetBody(),
+                            contact.GetFixtureB().GetBody());
+    };
+
+    if(callbacks.EndContact) listener.EndContact = function (contact) {
+        callbacks.EndContact(contact.GetFixtureA().GetBody(),
+                            contact.GetFixtureB().GetBody());
     };
 
     this.world.SetContactListener(listener);
@@ -92,6 +96,7 @@ PhysicsEngineClass.prototype.addBody = function (entityDef) {
     // Now we define the shape of this object as a box
     fixtureDefinition.shape = new PolygonShape();
     fixtureDefinition.shape.SetAsBox(entityDef.halfWidth, entityDef.halfHeight);
+    if(entityDef.isSensor) fixtureDefinition.isSensor = entityDef.isSensor;
     body.CreateFixture(fixtureDefinition);
 
     return body;

@@ -163,7 +163,7 @@ function pintarSpriteCustom(nombreSprite, x, y, w, h, angulo){
     GE.ctx.drawImage(sheet.img, sprite.x, sprite.y, sprite.w, sprite.h, -sprite.w/(2*w), -sprite.h/(2*h), sprite.w/w, sprite.h/h);
     GE.ctx.restore();
 }
-
+/*
 //Dibuja el Sprite con nombre "nombreSprite" en la posicion X, Y
 function pintarSpriteCenter(nombreSprite, x, y, w, h, angulo, centerAxis){
 
@@ -189,13 +189,14 @@ function pintarSpriteCenter(nombreSprite, x, y, w, h, angulo, centerAxis){
     }
 
     GE.ctx.save();
-    GE.ctx.translate(x, y);
-    //GE.ctx.rotate((this.angulo*Math.PI)/180);
-    GE.ctx.rotate(angulo);
     var newX = -sprite.w/(2*w);
     var newY = -sprite.h/(2*h);
-    if(centerAxis==='X') newY/=4;
-    if(centerAxis==='Y') newX/=4;
-    GE.ctx.drawImage(sheet.img, sprite.x, sprite.y, sprite.w, sprite.h, newX, newY, sprite.w/w, sprite.h/h);
+    
+    GE.ctx.translate(x-sprite.w, y);
+    //if(centerAxis==='X') newY/=4;
+    //if(centerAxis==='Y') newX/=4;
+    //GE.ctx.rotate((this.angulo*Math.PI)/180);
+    //GE.ctx.rotate(angulo);
+    GE.ctx.drawImage(sheet.img, sprite.x, sprite.y, sprite.w, sprite.h, 0, 0, sprite.w/w, sprite.h/h);
     GE.ctx.restore();
-}
+}*/

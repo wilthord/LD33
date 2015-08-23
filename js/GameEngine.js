@@ -17,6 +17,10 @@ GameEngineClass = function(){
 
 	this.entities=[];
 
+	this.pilaresActivos = 0;
+
+	this.cristalesActivos = 0;
+
 	this.personaje={};
 
 	this.marcaMouse={};
@@ -30,6 +34,8 @@ GameEngineClass = function(){
 	this.nivelActual = 1;
 
 	this.entidadesFactory = [];
+
+	this.isGUI = false;
 }
 
 GameEngineClass.prototype.setup = function () {
@@ -40,22 +46,39 @@ GameEngineClass.prototype.setup = function () {
     // Add contact listener
     gPhysicsEngine.addContactListener({
 
-        PostSolve: function (bodyA, bodyB, impulse) {
+        BeginContact: function (bodyA, bodyB) {
             var uA = bodyA ? bodyA.GetUserData() : null;
             var uB = bodyB ? bodyB.GetUserData() : null;
 
             if (uA !== null) {
                 if (uA.ent !== null && uA.ent.onTouch) {
-                    uA.ent.onTouch(bodyB, null, impulse);
+                    uA.ent.onTouch(bodyB, null);
                 }
             }
 
             if (uB !== null) {
                 if (uB.ent !== null && uB.ent.onTouch) {
-                    uB.ent.onTouch(bodyA, null, impulse);
+                    uB.ent.onTouch(bodyA, null);
                 }
             }
-        }
+        },
+
+        EndContact: function(bodyA, bodyB) {
+            var uA = bodyA ? bodyA.GetUserData() : null;
+            var uB = bodyB ? bodyB.GetUserData() : null;
+
+            if (uA !== null) {
+                if (uA.ent !== null && uA.ent.endTouch) {
+                    uA.ent.endTouch(bodyB, null);
+                }
+            }
+
+            if (uB !== null) {
+                if (uB.ent !== null && uB.ent.endTouch) {
+                    uB.ent.endTouch(bodyA, null);
+                }
+            }
+        },
     });
 
 }
@@ -112,12 +135,42 @@ GameEngineClass.prototype.cargarNiveles = function(){
 	cargarNivelesJSON("js/Levels/Niveles.json",GE.callbackIniciar);
 }
 
+GameEngineClass.prototype.nivelSuperado = function(){
+	//alert("Level Cleared");
+	this.nivelActual++;
+	//this.nuevoNivel();
+	this.isGUI=true;
+}
+
+GameEngineClass.prototype.nivelPerdido = function(){
+	//alert("GameOver try again...");
+	//this.nuevoNivel();
+	this.isGUI=true;
+}
+
 GameEngineClass.prototype.nuevoNivel = function(){
 	var nivelCargar = niveles[this.nivelActual];
+
+	//Limpiamos todo lo del nivel anterior
+	for (var j = 0; j < this.entities.length; j++) {
+		if(this.entities[j].physBody) gPhysicsEngine.removeBody(this.entities[j].physBody);
+        this.entities.removeObj(this.entities[j]);
+    }
+
 	this.entities = [];
+	this.pilaresActivos=0;
+	this.cristalesActivos=0;
+	this.personaje = {};
 
 	for(var i=0; i<nivelCargar.entidades.length; i++){
 		var entidadNueva = new this.entidadesFactory[nivelCargar.entidades[i].type](nivelCargar.entidades[i]);
+		if(entidadNueva instanceof PilarClass){
+			this.pilaresActivos++;
+		}else if (entidadNueva instanceof CristalClass) {
+			this.cristalesActivos++;
+		}else if (entidadNueva instanceof PlayerClass) {
+			this.personaje = entidadNueva;
+		}
 		this.entities.push(entidadNueva);
 	}
 
@@ -128,17 +181,29 @@ GameEngineClass.prototype.tick = function() {
 	// Iniciamos el monitoreo
 	stats.begin();
 
-    GE.updateGame();
-    GE.drawGame();
+		if(!this.isGUI){
+		if(this.cristalesActivos<1){
+			this.nivelSuperado();	
+		}else if(this.personaje && this.personaje!=null && this.personaje instanceof PlayerClass && this.personaje.isDead==false){
+
+		}else{
+			this.nivelPerdido();
+		}
+
+	    GE.updateGame();
+	    GE.drawGame();
+	}
 
     //Finalizamos el monitoreo
     stats.end();
 }
 
 GameEngineClass.prototype.updateGame=function(){
+
+
 	var entidadesEliminar = [];
 	GE.entities.forEach(function(entidad) {
-		if(entidad.isdead){
+		if(entidad.isDead==true){
 			entidadesEliminar.push(entidad);
 		}else{
 			entidad.update();
@@ -179,6 +244,9 @@ GameEngineClass.prototype.spawnEnemy = function(){
 GE = new GameEngineClass();
 GE.entidadesFactory["GuardianClass"]=GuardianClass;
 GE.entidadesFactory["PlayerClass"]=PlayerClass;
+GE.entidadesFactory["PilarClass"]=PilarClass;
+GE.entidadesFactory["CristalClass"]=CristalClass;
+
 GE.init();
 
 /*
