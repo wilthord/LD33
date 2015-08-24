@@ -35,7 +35,7 @@ GameEngineClass = function(){
 
 	this.entidadesFactory = [];
 
-	this.isGUI = false;
+	this.isGUI = true;
 }
 
 GameEngineClass.prototype.setup = function () {
@@ -86,9 +86,11 @@ GameEngineClass.prototype.setup = function () {
 GameEngineClass.prototype.constructor = GameEngineClass;
 	// Metodo invocado cuando se terminan de cargar los sprites
 GameEngineClass.prototype.callbackIniciar = function(){
-
-	GE.nuevoNivel();
-
+	if(GE.isGUI){
+		GE.nuevoGUI("InicioGUI");
+	}else{
+		GE.nuevoNivel();
+	}	
 	/** Inicio de la sección para preparar un gameLoop eficiente **/
 	var animFrame = window.requestAnimationFrame ||
         window.webkitRequestAnimationFrame ||
@@ -138,13 +140,13 @@ GameEngineClass.prototype.cargarNiveles = function(){
 GameEngineClass.prototype.nivelSuperado = function(){
 	//alert("Level Cleared");
 	this.nivelActual++;
-	//this.nuevoNivel();
+	this.nuevoGUI("SuperadoGUI");
 	this.isGUI=true;
 }
 
 GameEngineClass.prototype.nivelPerdido = function(){
 	//alert("GameOver try again...");
-	//this.nuevoNivel();
+	this.nuevoGUI("PerdisteGUI");
 	this.isGUI=true;
 }
 
@@ -176,12 +178,33 @@ GameEngineClass.prototype.nuevoNivel = function(){
 
 }
 
+GameEngineClass.prototype.nuevoGUI = function(nombreGUI){
+	var nivelCargar = niveles[nombreGUI];
+
+	//Limpiamos todo lo del nivel anterior
+	for (var j = 0; j < this.entities.length; j++) {
+		if(this.entities[j].physBody) gPhysicsEngine.removeBody(this.entities[j].physBody);
+        this.entities.removeObj(this.entities[j]);
+    }
+
+	this.entities = [];
+	this.pilaresActivos=0;
+	this.cristalesActivos=0;
+	this.personaje = {};
+
+	for(var i=0; i<nivelCargar.entidades.length; i++){
+		var entidadNueva = new GUIEntityClass(nivelCargar.entidades[i]);
+		this.entities.push(entidadNueva);
+	}
+
+}
+
 GameEngineClass.prototype.tick = function() {
 
 	// Iniciamos el monitoreo
 	stats.begin();
 
-		if(!this.isGUI){
+	if(!this.isGUI){
 		if(this.cristalesActivos<1){
 			this.nivelSuperado();	
 		}else if(this.personaje && this.personaje!=null && this.personaje instanceof PlayerClass && this.personaje.isDead==false){
@@ -189,10 +212,10 @@ GameEngineClass.prototype.tick = function() {
 		}else{
 			this.nivelPerdido();
 		}
-
-	    GE.updateGame();
-	    GE.drawGame();
 	}
+
+	GE.updateGame();
+	GE.drawGame();
 
     //Finalizamos el monitoreo
     stats.end();

@@ -17,9 +17,10 @@ GUIEntityClass.prototype = Object.create(EntityClass.prototype);
 GUIEntityClass.prototype.constructor = GUIEntityClass;
 
 GUIEntityClass.prototype.update = function(){
-	if(gInputEngine.actions[CLICK]){
-		if(GE.marcaMouse.pos.x>=this.pos.x && GE.marcaMouse.pos.y>=this.pos.y && GE.marcaMouse.pos.x<=(this.pos.x+this.sizeX) && GE.marcaMouse.pos.y<=(this.pos.y+this.sizeY)){
+	if(gInputEngine.actions[CLICK] && this.GUIAction!==""){
+		if(gInputEngine.mouse.x>=this.pos.x && gInputEngine.mouse.y>=this.pos.y && gInputEngine.mouse.x<=(this.pos.x+this.sizeX) && gInputEngine.mouse.y<=(this.pos.y+this.sizeY)){
 			//TODO llamar a la accion
+			GUIControl.acciones[this.GUIAction]();
 		}
 	}
 }
